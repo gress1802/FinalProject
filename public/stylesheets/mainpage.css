@@ -1,0 +1,23 @@
+body {
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: white;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#brand{
+  font-family: 'Lato', sans-serif;
+  font-weight:bolder;
+}
+
+/* Card styling */
+
+.col{
+  padding-bottom: 5vh;
+  padding-top: 5vw;
+}
