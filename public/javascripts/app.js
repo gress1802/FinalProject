@@ -27,11 +27,24 @@ function login() {
         authenticatedUser = user;
         $('#loginError').text('Valid Credentials');
         $('#modalLoginForm').modal('hide');
+        console.log(user);
+        $('#userDisplay').text(user.first);
+        $('#userDisplay').css('color', 'white');
+        $('#userDisplay').css('font-weight', 'bold');
         //do more in here with javascript
     }).catch(err => {
         console.log('error');
         $('#loginError').text('Invalid credentials');
         $('loginError').css('color', 'red');
     })
+}
+/*
+ * This is a function that is envoked when the program constainer is loaded on the main page
+ * It will send a request to the server to get a list of programs (/api/v1/programs)
+ * Additionally, this function will build the program cards and add them to the program container 
+ * There will be a max of 9 programs
+*/
+function loadPrograms(){
+
 }
 

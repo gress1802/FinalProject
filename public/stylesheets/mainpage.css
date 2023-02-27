@@ -15,6 +15,14 @@ a {
   font-weight:bolder;
 }
 
+.home{
+  min-height: 100vh;
+}
+
+.programContainer{
+  height: auto;
+}
+
 /* Card styling */
 
 .col{
@@ -25,3 +33,5 @@ a {
 #loginError{
   color: red;
 }
+
+
