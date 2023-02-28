@@ -35,10 +35,10 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Programs</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="#">Pricing</a>
-                            <a class="dropdown-item" href="#">Availability</a>
-                            <a class="dropdown-item" href="#">Sign up</a>
+                        <div id = "programDropdown" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item click" href="#">Pricing</a>
+                            <a class="dropdown-item click" href="#">Availability</a>
+                            <a class="dropdown-item click" data-toggle="modal" data-target="#modalRegisterForm">Sign Up</a>
                         </div>
                     </li>
                 </ul>
@@ -52,28 +52,27 @@
             </div>
         </nav>
     </header>
-    <body>
+    <body onload="loadPrograms()">
+
         <!--Login Modal-->
-        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="modalLoginForm">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header text-center">
                         <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
                         </button>
                     </div>
                     <div class="modal-body mx-3">
                         <div class="md-form mb-5">
-                            <i class="fas fa-envelope prefix grey-text"></i>
                             <input type="email" id="defaultForm-email" class="form-control validate">
-                            <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+                            <label for="defaultForm-email">Your email</label>
                         </div>
 
                         <div class="md-form mb-4">
-                            <i class="fas fa-lock prefix grey-text"></i>
                             <input type="password" id="defaultForm-pass" class="form-control validate">
-                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                            <label for="defaultForm-pass">Your password</label>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
@@ -84,6 +83,40 @@
             </div>
         </div>
         <!--End of Login Modal-->
+
+        <!--This is the sign in Modal-->
+        <div class="modal fade" id="modalRegisterForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Sign up</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <input type="text" id="orangeForm-name" class="form-control validate">
+                            <label for="orangeForm-name">Your name</label>
+                        </div>
+                        <div class="md-form mb-5">
+                            <input type="email" id="orangeForm-email" class="form-control validate">
+                            <label for="orangeForm-email">Your email</label>
+                        </div>
+
+                        <div class="md-form mb-4">
+                            <input type="password" id="orangeForm-pass" class="form-control validate">
+                            <label for="orangeForm-pass">Your password</label>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button class="btn btn-deep-orange">Sign up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End of sign in modal-->
 
         <!--Home Page (Intro)-->
         <div class = 'container home'>
@@ -97,107 +130,11 @@
                 </div>
             </div>
         </div>
-        <!--Start of programs grid-->
-        <div class = "container" id="programContainer" onload="loadPrograms()">
-            <!--This is a template for what the program cards will look like
-            <div class = "row">
-                <div class = "col programCard" id='p1'>
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-                <div class = "col programCard" id="'p2">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-                <div class = "col programCard" id="p3">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Martial Arts</a>
-                    </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class = "col programCard" id="p4">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Esports</a>
-                    </div>
-                    </div>
-                </div>
-                <div class = "col programCard" id="p5">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-                <div class = "col programCard" id="p6">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class = "col programCard" id="p7">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-                <div class = "col programCard" id="p8">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-                <div class = "col programCard" id="p9">
-                    <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="..." alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                    </div>
-                </div>
-            </div>
+
+        <!--Program container-->
+        <div id="programContainer" class="container">
+
         </div>
-        End of programs grid-->
     </body>
     <footer>
 

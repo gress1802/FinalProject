@@ -23,7 +23,9 @@ a {
   height: auto;
 }
 
-/* Card styling */
+.click{
+  cursor: pointer;
+}
 
 .col{
   padding-bottom: 5vh;
