@@ -33,7 +33,10 @@ function login() {
         $('#userDisplay').text(user.first);
         $('#userDisplay').css('color', 'white');
         $('#userDisplay').css('font-weight', 'bold');
+        addLogoutButton();
         addProgramOption();
+        $('#defaultForm-email').val('');
+        $('#defaultForm-pass').val('');
         //do more in here with javascript
     }).catch(err => {
         console.log('error');
@@ -41,6 +44,35 @@ function login() {
         $('loginError').css('color', 'red');
     })
 }
+
+/*
+ * This is a function that creates and adds the logout button to the navbar when logged in
+*/
+function addLogoutButton(){
+    $('#logoutButton').empty();
+    let logoutButton = $('<button>', {class: 'btn btn-outline-danger ml-3 mr-3', type: 'button', id: 'logoutButton', text: 'Logout', onclick: 'logout()'});
+    $('#logoutButton').append(logoutButton);
+}
+
+/*
+ * This is a function that logs the user out
+ * It will send a request to the server to log the user out (/logout)
+ * The server will respond with a 200 ok
+*/
+function logout(){
+    fetch('/logout', {
+        method: 'POST'
+    }).then(() => {
+        authenticatedUser = null;
+        $('#userDisplay').empty();
+        $('#logoutButton').empty();
+        $("#dropdownLink").remove();
+        //do more in here with javascript
+    }).catch(err => {
+        console.log('error');
+    })
+}
+
 /*
  * This is a function that is envoked when the program constainer is loaded on the main page
  * It will send a request to the server to get a list of programs (/api/v1/programs)
@@ -62,7 +94,7 @@ function loadPrograms(){
 function addProgramOption(){
     programDropdown = $('#programDropdown');
     if(authenticatedUser && authenticatedUser.admin){
-        programDropdown.append('<a class="dropdown-item" href="#" data-toggle="modal" data-target="#addProgramModal">Add Program</a>');
+        programDropdown.append('<a id="dropdownLink" class="dropdown-item" href="#" data-toggle="modal" data-target="#addProgramModal">Add Program</a>');
         //build the modal
         let modal = $('<div>', {class: 'modal fade', id: 'addProgramModal', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'exampleModalLabel', 'aria-hidden': 'true'});
         let modalDialog = $('<div>', {class: 'modal-dialog', role: 'document'});
@@ -87,10 +119,10 @@ function addProgramOption(){
         let thirdFormLabel = $('<label>', {for: 'programLocation', text: 'Program Location'});
         let fourthForm = $('<div>', {class: 'md-form mb-5'});
         let fourthFormInput = $('<input>', {type: 'text', id: 'programPrice', class: 'form-control validate'});
-        let fourthFormLabel = $('<label>', {for: 'programPrice', text: 'Program Price'});
+        let fourthFormLabel = $('<label>', {for: 'programPrice', text: 'Program Price {memberPrice:nonMemberPrice}'});
         let fifthForm = $('<div>', {class: 'md-form mb-5'});
         let fifthFormInput = $('<input>', {type: 'text', id: 'programTime', class: 'form-control validate'});
-        let fifthFormLabel = $('<label>', {for: 'programTime', text: 'Program Time'});
+        let fifthFormLabel = $('<label>', {for: 'programTime', text: 'Program Date/Time'});
         let sixthForm = $('<div>', {class: 'md-form mb-5'});
         let sixthFormInput = $('<input>', {type: 'text', id: 'programParticipants', class: 'form-control validate'});
         let sixthFormLabel = $('<label>', {for: 'programParticipants', text: 'Number of Participants'});
@@ -98,6 +130,11 @@ function addProgramOption(){
         let seventhFormInput = $('<input>', {type: 'text', id: 'programDuration', class: 'form-control validate'});
         let seventhFormLabel = $('<label>', {for: 'programDuration', text: 'Program Duration'});
         let submitButton = $('<button>', {type: 'button', class: 'btn btn-primary', text: 'Submit', onclick:'addProgram()'});
+        let eightForm = $('<div>', {class: 'md-form mb-5'});
+        let eightFormInput = $('<input>', {type: 'text', id: 'programQuestion', class: 'form-control validate'});
+        let eightFormLabel = $('<label>', {for: 'programQuestion', text: 'Program Question'});
+        let nineForm = $('<div>', {class: 'md-form mb-5'});
+
         
         modalClose.append(modalCloseSpan);
         modalHeader.append(modalTitle);
@@ -134,6 +171,10 @@ function addProgramOption(){
         seventhForm.append(seventhFormInput);
         seventhForm.append(seventhFormLabel);
         modalBody.append(seventhForm);
+        //Eighth form (Question)
+        eightForm.append(eightFormInput);
+        eightForm.append(eightFormLabel);
+        modalBody.append(eightForm);
         modalFooter.append(submitButton);
         //end of forms
 
@@ -198,7 +239,10 @@ function createProgram(program, num) {
     modalHeader.append(modalTitle, modalClose);
     let modalBody = $("<div>", { class: "modal-body" });
     let modalBodyText = $("<p>", { text: "Description: "+program.description });
+    //append the question to the modal
+    let modalBodyQuestion = $("<p>", { text: "Reqirement: (Yes/No) "+program.question });
     modalBody.append(modalBodyText);
+    modalBody.append(modalBodyQuestion);
 
     //create a sign up button at the bottom of the modal
     let modalFooter = $("<div>", { class: "modal-footer" });
@@ -217,11 +261,11 @@ function createProgram(program, num) {
     let signUpModalBody = $("<div>", { class: "modal-body" });
     //labels and inputs
     let signUpModalBodyNameInput = $('<input>', {type: 'text', id: 'signUpName'+num, class: 'form-control validate'});
-    let signUpModalBodyNameLabel = $('<label>', {for: 'signUpName'+num, text: 'Program Name'});
-    let signUpModalBodyAnswerLabel = $("<label>", { for: "answer"+num, text: "Answer to the question:" });
+    let signUpModalBodyNameLabel = $('<label>', {for: 'signUpName'+num, text: 'Your Name'});
+    let signUpModalBodyAnswerLabel = $("<label>", { for: "answer"+num, text: program.question });
     let signUpModalBodyAnswerInput = $("<input>", { type: "text", id: "answer"+num, class: 'form-control validate' });
     //end
-    let signUpModalBodyText = $("<p>", { text: "Sign up for: " + program.name + " | " + "if you are logged in hit 'Sign up" });
+    let signUpModalBodyText = $("<p>", { text: "Sign up for: " + program.name + " | " + "If you are logged in hit 'Sign up' (Make sure you answered the question if needed)" });
     signUpModalBody.append(signUpModalBodyNameLabel, signUpModalBodyNameInput, signUpModalBodyAnswerLabel, signUpModalBodyAnswerInput, signUpModalBodyText);
     let signUpModalFooter = $("<div>", { class: "modal-footer" });
     let signUpModalFooterButton = $("<button>", { type: "button", class: "btn btn-primary", "data-dismiss": "modal", text: "Close" });
@@ -232,7 +276,8 @@ function createProgram(program, num) {
     $('body').append(signUpModal);
 
     //add a final sign up button to the sign up modal
-    let signUpModalBodyButton = $("<button>", { type: "button", class: "btn btn-primary", text: "Sign Up", "data-dismiss": "modal", onclick: "signUp("+program.name+")" });
+    var signParam = "signUp("+'"'+program.id+'"'+','+num+')';
+    let signUpModalBodyButton = $("<button>", { type: "button", class: "btn btn-primary", text: "Sign Up", "data-dismiss": "modal", onclick: signParam});
     signUpModalFooter.append(signUpModalBodyButton);
 
     //add the author duration location name num participants price and time to the modal
@@ -247,8 +292,9 @@ function createProgram(program, num) {
     let durationText = $("<p>", { text: "Duration: " + duration });
     let locationText = $("<p>", { text: "Location: " + location });
     let nameText = $("<p>", { text: "Name: " + name });
-    let numParticipantsText = $("<p>", { text: "Number of Participants: " + numParticipants });
-    let priceText = $("<p>", { text: "Price: " + price });
+    let numParticipantsText = $("<p>", { text: "Number of Participants: " + program.numParticipants + " / " + "Maximum Number of Participants: " + program.maxParticipants });
+    priceArr = price.split(":");
+    let priceText = $("<p>", { text: "Member Price: " + priceArr[0] + " | " + "Non-Member Price: " + priceArr[1] });
     let timeText = $("<p>", { text: "Time: " + time });
     modalBody.append(authorText, durationText, locationText, nameText, numParticipantsText, priceText, timeText);
 
@@ -266,15 +312,20 @@ function createProgram(program, num) {
  * This is a function that is envoked when the user signs up for a program
  * It will send a POST request to /api/v1/programs/:programName
 */
-function signUp(programName){
+function signUp(programName, num){
     console.log("asdasdasd");
-    let answer = $('#answer').val();
-    let name = $('#signUpName').val();
-    let signUpData = { answer: answer, name: name };
+    let answer = $('#answer'+num).val();
+    let name = $('#signUpName'+num).val();
+    if(answer == null || answer == "" || answer == "No" || answer == "no" || answer == "NO" || answer == "nO"){
+        alert("you cannot join"); 
+        return;
+    }
+    console.log(name);
+    let signUpData = JSON.stringify({name: name, answer: answer});
     fetch('/api/v1/programs/'+programName, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(signUpData),
+        body: signUpData,
         credentials: 'include'
     }).then(res => res.json())
     .then(data => { console.log(data); });
@@ -292,7 +343,8 @@ function addProgram(){
     let programTime = $('#programTime').val();
     let programParticipants = $('#programParticipants').val();
     let programDuration = $('#programDuration').val();
-    let programData = { name: programName, description: programDescription, location: programLocation, price: programPrice, time: programTime, maxParticipants: programParticipants, duration: programDuration };
+    let programQuestion = $('#programQuestion').val();
+    let programData = { name: programName, description: programDescription, location: programLocation, price: programPrice, time: programTime, maxParticipants: programParticipants, duration: programDuration, question: programQuestion };
     fetch('/api/v1/admin/programs', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -311,6 +363,7 @@ function addProgram(){
         $('#programTime').val('');
         $('#programParticipants').val('');
         $('#programDuration').val('');
+        $('#programQuestion').val('');
     });
 }
 

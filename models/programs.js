@@ -19,9 +19,10 @@ const BY_NAME = {};
  * @param {String} location - location of the program
  * @param {int} numParticipants - number of participants in the program
  * @param {String array} participantList - a list of participants in the program
+ * @param {String} question - a question for the program
 */
 class Program{
-    constructor(name, description, author, maxParticipants, duration, price, time, location){
+    constructor(name, description, author, maxParticipants, duration, price, time, location, question){
         this.id = uuidv4();
         this.name = name;
         let created = Date.now();
@@ -34,10 +35,11 @@ class Program{
         //add to database
         BY_ID[this.id] = this;
         BY_NAME[this.name] = this;
-        this.maxParticipants = 0;
+        this.maxParticipants = maxParticipants;
         this.numParticipants = 0;
         this.duration = duration;
         this.participantList = [];
+        this.question = question;
     }
 }
 
@@ -59,4 +61,16 @@ function getAllPrograms(){
     return Object.values(BY_ID).map(program => Object.assign({}, program));
 }
 
-module.exports = {Program, getProgramById, getProgramByName, getAllPrograms};
+//this is a function that adds a participant to a program
+//returns the participant list
+function addParticipant(programName, participant){
+    var program = BY_ID[programName];
+    program.participantList.push(participant);
+    program.numParticipants++;
+    if(program.numParticipants >= program.maxParticipants){
+        program.programFull = true;
+    }
+
+}
+
+module.exports = {Program, getProgramById, getProgramByName, getAllPrograms, addParticipant};

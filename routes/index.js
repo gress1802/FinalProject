@@ -7,12 +7,9 @@ var programDB = require("../models/programs.js" );
 
 //testing account
 new userDB.User('Joseph', 'Gress', 'gress2123@uwlax.edu', '111', true);
-new userDB.User('Joe', 'Gress', 'jgress1802@gmail.com', '111', false);
+new userDB.User('Jane', 'Doe', 'jgress1802@gmail.com', '111', false);
 
 //testing programs
-new programDB.Program('Program 1', '2020-12-12', '12:00', 'UWL', 'This is a test program 1', 'Free', 'Joseph Gress', 20);
-new programDB.Program('Program 2', '2020-12-12', '12:00', 'UWL', 'This is a test program 2', 'Free', 'Joseph Gress', 25);
-new programDB.Program('Program 3', '2020-12-12', '12:00', 'UWL', 'This is a test program 3', 'Free', 'Joseph Gress', 30);
 
 /*
  * GET Program List
@@ -50,15 +47,15 @@ router.post('/admin/programs', (req, res, next) => {
     let price = req.body.price;
     let time = req.body.time;
     let location = req.body.location;
-    console.log(name, description, req.session.user.first, numParticipants, duration, price, time, location)
-    let program = new programDB.Program(name, description, req.session.user.first + ' ' + req.session.user.last, numParticipants, duration, price, time, location);
+    let question = req.body.question;
+    let program = new programDB.Program(name, description, req.session.user.first + ' ' + req.session.user.last, numParticipants, duration, price, time, location, question);
     console.log(program);
     if(!name || !description || !numParticipants || !duration || !price || !time || !location){
-      res.status(401).send('Invalid parameters');
+      res.status(401).send({msg : 'Invalid parameters'});
     }
     res.status(200).send(program);
   }else{
-    res.status(401).send('Unauthorized');
+    res.status(401).send({msg : 'Unauthorized'});
   }
 });
 
@@ -67,39 +64,35 @@ router.post('/admin/programs', (req, res, next) => {
  * This is a post endpoint that will sign a user up for a program
  * The user will either be a memeber or a guest
 */
-router.post('/programs/:programName', (req, res, next) => {
+router.post('/programs/:pid', (req, res, next) => {
   //first check if the user is logged in
   if(req.session.user){
-    console.log("user is an admin");
     //get the parameters from user session
-    let pName = req.params.programName;
-    let program = programDB.getProgramByName(pName);
+    let pid = req.params.pid;
+    let program = JSON.parse(JSON.stringify(programDB.getProgramById(pid)));
     let fullName = req.session.user.first + ' ' + req.session.user.last;
     if(program){
       if(program.numParticipants < program.maxParticipants){
-        program.numParticipants++;
-        program.participantsList.push(fullName);
+        programDB.addParticipant(pid, fullName);
         res.status(200).send(program);
       }else{
-        res.status(401).send('Program is full');
+        res.status(401).send({msg : 'Program is full'});
       }
     }else{
-      res.status(401).send('Program does not exist');
+      res.status(401).send({msg : 'Program does not exist'});
     }
   //if not logged in the user is a guest
   }else{
-    console.log("user is a guest");
     //retreive the parameters from the request body which are the first and last name
-    let pName = req.params.programName;
-    let program = programDB.getProgramByName(pName);
-    let fullName = req.body.first + ' ' + req.body.last;
+    let pid = req.params.pid;
+    let program = programDB.getProgramById(pid);
+    let fullName = req.body.name;
     if(program){
       if(program.numParticipants < program.maxParticipants){
-        program.numParticipants++;
-        program.participantsList.push(fullName);
+        programDB.addParticipant(pid, fullName);
         res.status(200).send(program);
       }else{
-        res.status(401).send('Program is full');
+        res.status(401).send({ msg : 'Program is full'});
       }
     }
   }
