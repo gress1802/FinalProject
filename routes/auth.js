@@ -1,6 +1,7 @@
 let express = require('express');
 let users = require('../models/users');
 let router = express.Router();
+const accountService = require('../services/accountService');
 
 /*
  * This is a POST route that the path /login
@@ -12,11 +13,8 @@ let router = express.Router();
  * @return {object} user - user object
  * @return {string} error - error message
 */
-router.post("/login", (req, res) => {
-   let user = users.getUsersByEmail(req.body.email);
-   console.log(user);
-   console.log(req.body.email);
-   console.log(user);
+router.post("/login", async (req, res) => {
+   let user = await accountService.getAccountByEmail(req.body.email);
    const ERROR = "Invalid credentials";
    if( user ) {
       req.session.regenerate( (err) => {

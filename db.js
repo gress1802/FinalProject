@@ -1,6 +1,10 @@
+/*
+ * PLEASE DO NOT DEMO THIS FILE IN CLASS
+*/
+
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('your_database_name', 'gress2123', 'password', {
+const sequelize = new Sequelize('ymca', 'gress2123', 'Wordpass12345!', {
   host: 'cs341.mysql.database.azure.com',
   dialect: 'mysql',
   dialectOptions: {
