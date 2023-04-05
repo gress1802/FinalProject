@@ -34,6 +34,7 @@ function login() {
         $('#userDisplay').css('color', 'white');
         $('#userDisplay').css('font-weight', 'bold');
         addLogoutButton();
+        console.log("adding program option");
         addProgramOption();
         $('#defaultForm-email').val('');
         $('#defaultForm-pass').val('');
@@ -83,6 +84,7 @@ function loadPrograms(){
     fetch('/api/v1/programs')
         .then(res => res.json())
         .then(array => {
+            console.log(array);
             populatePrograms(array);
         });//body is just a place holder for the return object from '/programs'
 }
@@ -91,9 +93,10 @@ function loadPrograms(){
  * This is a function that adds another option under programs if the user is an admin
  * This option is a modal popup that allows the user to add a new program
 */
+/*
 function addProgramOption(){
     programDropdown = $('#programDropdown');
-    if(authenticatedUser && authenticatedUser.admin){
+    if(authenticatedUser && authenticatedUser.isAdmin){
         programDropdown.append('<a id="dropdownLink" class="dropdown-item" href="#" data-toggle="modal" data-target="#addProgramModal">Add Program</a>');
         //build the modal
         let modal = $('<div>', {class: 'modal fade', id: 'addProgramModal', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'exampleModalLabel', 'aria-hidden': 'true'});
@@ -185,6 +188,165 @@ function addProgramOption(){
         $('body').append(modal);
     }
 }
+*/
+
+function addProgramOption(){
+    programDropdown = $('#programDropdown');
+    if(authenticatedUser && authenticatedUser.isAdmin){
+        programDropdown.append('<a id="dropdownLink" class="dropdown-item" href="#" data-toggle="modal" data-target="#addProgramModal">Add Program</a>');
+        //build the modal
+        let modal = $('<div>', {class: 'modal fade', id: 'addProgramModal', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'exampleModalLabel', 'aria-hidden': 'true'});
+        let modalDialog = $('<div>', {class: 'modal-dialog', role: 'document'});
+        let modalContent = $('<div>', {class: 'modal-content'});
+        let modalHeader = $('<div>', {class: 'modal-header'});
+        let modalTitle = $('<h5>', {class: 'modal-title', id: 'exampleModalLabel', text: 'Add Program'});
+        let modalClose = $('<button>', {type: 'button', class: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close'});
+        let modalCloseSpan = $('<span>', {'aria-hidden': 'true', text: 'x'});
+        let modalBody = $('<div>', {class: 'modal-body'});
+        let modalFooter = $('<div>', {class: 'modal-footer'});
+        let modalFooterButton = $('<button>', {type: 'button', class: 'btn btn-secondary', 'data-dismiss': 'modal', text: 'Close'});
+
+        //program form fields
+        let firstForm = $('<div>', {class: 'md-form mb-5'});
+        let firstFormInput = $('<input>', {type: 'text', id: 'programName', class: 'form-control validate'});
+        let firstFormLabel = $('<label>', {for: 'programName', text: 'Program Name'});
+        let secondForm = $('<div>', {class: 'md-form mb-5'});
+        let secondFormInput = $('<input>', {type: 'text', id: 'programDescription', class: 'form-control validate'});
+        let secondFormLabel = $('<label>', {for: 'programDescription', text: 'Program Description'});
+        let thirdForm = $('<div>', {class: 'md-form mb-5'});
+        let thirdFormInput = $('<input>', {type: 'text', id: 'programLocation', class: 'form-control validate'});
+        let thirdFormLabel = $('<label>', {for: 'programLocation', text: 'Program Location'});
+        let fourthForm = $('<div>', {class: 'md-form mb-5'});
+        let fourthFormInput = $('<input>', {type: 'text', id: 'programPrice', class: 'form-control validate'});
+        let fourthFormLabel = $('<label>', {for: 'programPrice', text: 'Program Price {memberPrice:nonMemberPrice}'});
+        let fifthForm = $("<div>", { class: "md-form mb-5" });
+        let fifthFormInput = $("<input>", {
+        type: "text",
+        id: "programStartDate",
+        class: "form-control validate",
+        });
+        let fifthFormLabel = $("<label>", {
+        for: "programStartDate",
+        text: "Program Start Date",
+        });
+
+        // Add endDate form
+        let endDateForm = $("<div>", { class: "md-form mb-5" });
+        let endDateFormInput = $("<input>", {
+        type: "text",
+        id: "programEndDate",
+        class: "form-control validate",
+        });
+        let endDateFormLabel = $("<label>", {
+        for: "programEndDate",
+        text: "Program End Date",
+        });
+
+        // Update sixthForm for startTime
+        let sixthForm = $("<div>", { class: "md-form mb-5" });
+        let sixthFormInput = $("<input>", {
+        type: "text",
+        id: "programStartTime",
+        class: "form-control validate",
+        });
+        let sixthFormLabel = $("<label>", {
+        for: "programStartTime",
+        text: "Program Start Time",
+        });
+
+        // Add endTime form
+        let endTimeForm = $("<div>", { class: "md-form mb-5" });
+        let endTimeFormInput = $("<input>", {
+        type: "text",
+        id: "programEndTime",
+        class: "form-control validate",
+        });
+        let endTimeFormLabel = $("<label>", {
+        for: "programEndTime",
+        text: "Program End Time",
+        });
+
+        // Add day form
+        let dayForm = $("<div>", { class: "md-form mb-5" });
+        let dayFormInput = $("<input>", {
+        type: "text",
+        id: "programDay",
+        class: "form-control validate",
+        });
+        let dayFormLabel = $("<label>", {
+        for: "programDay",
+        text: "Program Day",
+        });
+
+        // Update seventhForm for capacity
+        let seventhForm = $("<div>", { class: "md-form mb-5" });
+        let seventhFormInput = $("<input>", {
+        type: "text",
+        id: "programCapacity",
+        class: "form-control validate",
+        });
+        let seventhFormLabel = $("<label>", {
+        for: "programCapacity",
+        text: "Program Capacity",
+        });
+
+        // Update submitButton onclick attribute
+        let submitButton = $("<button>", {
+        type: "button",
+        class: "btn btn-primary",
+        text: "Submit",
+        onclick: "addProgram()",
+        });
+
+        // Append updated fields
+        //First form (program name)
+        firstForm.append(firstFormInput);
+        firstForm.append(firstFormLabel);
+        modalBody.append(firstForm);
+        //Second form (program description)
+        secondForm.append(secondFormInput);
+        secondForm.append(secondFormLabel);
+        modalBody.append(secondForm);
+        //Third form (location)
+        thirdForm.append(thirdFormInput);
+        thirdForm.append(thirdFormLabel);
+        modalBody.append(thirdForm);
+        //Fourth form (price)
+        fourthForm.append(fourthFormInput);
+        fourthForm.append(fourthFormLabel);
+        modalBody.append(fourthForm);
+        modalBody.append(fifthForm);
+        fifthForm.append(fifthFormInput);
+        fifthForm.append(fifthFormLabel);
+        modalBody.append(endDateForm);
+        endDateForm.append(endDateFormInput);
+        endDateForm.append(endDateFormLabel);
+        modalBody.append(sixthForm);
+        sixthForm.append(sixthFormInput);
+        sixthForm.append(sixthFormLabel);
+        modalBody.append(endTimeForm);
+        endTimeForm.append(endTimeFormInput);
+        endTimeForm.append(endTimeFormLabel);
+        modalBody.append(dayForm);
+        dayForm.append(dayFormInput);
+        dayForm.append(dayFormLabel);
+        modalBody.append(seventhForm);
+        seventhForm.append(seventhFormInput);
+        seventhForm.append(seventhFormLabel);
+
+        // End of updated fields
+
+        modalFooter.append(submitButton);
+
+        modalContent.append(modalBody);
+        modalContent.append(modalFooter);
+        modalDialog.append(modalContent);
+        modal.append(modalDialog);
+        $("body").append(modal);
+    }
+}
+
+
 
 //Throwing an error
 /*

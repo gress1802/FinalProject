@@ -2,19 +2,12 @@ var express = require('express');
 var router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
-//FAKE DB STUFF
-var userDB = require( "../models/users.js" );
-var programDB = require("../models/programs.js" );
 const Account = require('../models/account.js');
+const programService = require('../services/programService.js');
 
-//testing account
-new userDB.User('Joseph', 'Gress', 'gress2123@uwlax.edu', '111', true);
-new userDB.User('Jane', 'Doe', 'jgress1802@gmail.com', '111', false);
-
-//This is where we will be creating the accounts
-//CREATE ADMIN ACCOUNT 
-//THIS CODE IS ONLY RAN ONCE TO CREATE THE ACCOUNTS IN THE DATABASE
 /*
+THIS CODE IS ONLY RAN ONCE TO CREATE THE ACCOUNTS IN THE DATABASE
+*CREATE ADMIN ACCOUNT* 
 const adminAccount = Account.create({
   email: "gress2123@uwlax.edu",
   username: "Joseph",
@@ -23,7 +16,7 @@ const adminAccount = Account.create({
   isAdmin: true,
   accountID: uuidv4().split('-').reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000
 }); 
-//CREATE NONADMIN ACCOUNTS
+*CREATE NONADMIN ACCOUNTS*
 const janAccount = Account.create({
   email: "jdoe802@gmail.com",
   username: "Jane",
@@ -40,6 +33,14 @@ const janeAccount = Account.create({
   isAdmin: false,
   accountID: uuidv4().split('-').reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000
 });
+const ainiAccount = Account.create({ 
+  email: "aanderson@gmail.com",
+  username: "Aini",
+  password: "111",
+  status: "active",
+  isAdmin: false,
+  accountID: uuidv4().split('-').reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000
+});
 */
 //CREATE USERs ()
 
@@ -50,7 +51,7 @@ const janeAccount = Account.create({
  * This is an endpoint that will return a list of programs (JSON) (Used to populate the program portion of the list))
 */
 router.get('/programs', (req, res, next) => {
-  var programs = programDB.getAllPrograms();
+  const programs = programService.getAllPrograms();
   res.status(200).send(programs);
 });
 

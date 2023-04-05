@@ -26,6 +26,16 @@ const programService = {
       return { success: false, error };
     }
   },
+
+  async getAllPrograms() {
+    try {
+      const programs = await Program.findAll();
+      return { success: true, programs };
+    } catch (error) {
+      console.error('Error getting all programs:', error);
+      return { success: false, error };
+    }
+  },
 };
 
 module.exports = programService;
