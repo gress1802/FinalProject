@@ -55,6 +55,10 @@ const Program = sequelize.define('Program', {
     type: DataTypes.STRING(10),
     allowNull: true,
   },
+  numParticipants: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  }
 }, {
   tableName: 'PROGRAM',
   timestamps: false,

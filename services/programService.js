@@ -30,10 +30,10 @@ const programService = {
   async getAllPrograms() {
     try {
       const programs = await Program.findAll();
-      return { success: true, programs };
+      return programs;
     } catch (error) {
       console.error('Error getting all programs:', error);
-      return { success: false, error };
+      return error;
     }
   },
 };

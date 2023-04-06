@@ -1,20 +1,42 @@
 const Registration = require('../models/registration');
 const Program = require('../models/program');
 const User = require('../models/user');
+const { v4: uuidv4 } = require('uuid');
 
 async function createRegistration(programID, userID) {
   try {
-    const registration = await Registration.create({
-      programID,
-      userID,
-    });
+    // Retrieve the program with the given programID
+    const program = await Program.findByPk(programID);
 
-    return registration;
+    // Check if the program exists
+    if (!program) {
+      console.error('Error: Program not found');
+      return null;
+    }
+
+    // Check if the number of participants is less than the capacity
+    if (program.numParticipants < program.capacity) {
+      const registration = await Registration.create({
+        programID,
+        userID,
+        registrationID : uuidv4().split("-").reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000,
+      });
+
+      // Increment numParticipants in the program
+      program.numParticipants += 1;
+      await program.save();
+
+      return registration;
+    } else {
+      console.error('Error: Program capacity reached');
+      return null;
+    }
   } catch (error) {
     console.error('Error creating registration:', error);
     return null;
   }
 }
+
 
 async function getRegistrationByID(registrationID) {
   try {
