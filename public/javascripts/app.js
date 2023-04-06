@@ -124,6 +124,17 @@ function addProgramOption(){
         let fourthFormInput = $('<input>', {type: 'text', id: 'programPrice', class: 'form-control validate'});
         let fourthFormLabel = $('<label>', {for: 'programPrice', text: 'Program Price {memberPrice:nonMemberPrice}'});
         let fifthForm = $("<div>", { class: "md-form mb-5" });
+        let questionForm = $("<div>", { class: "md-form mb-5" });
+        let questionFormInput = $("<input>", {
+        type: "text",
+        id: "programQuestion",
+        class: "form-control validate",
+        });
+        let questionFormLabel = $("<label>", {
+        for: "programQuestion",
+        text: "Program Question",
+        });
+
         let fifthFormInput = $("<input>", {
         type: "text",
         id: "programStartDate",
@@ -237,7 +248,9 @@ function addProgramOption(){
         modalBody.append(seventhForm);
         seventhForm.append(seventhFormInput);
         seventhForm.append(seventhFormLabel);
-
+        questionForm.append(questionFormInput);
+        questionForm.append(questionFormLabel);
+        modalBody.append(questionForm);
         // End of updated fields
 
         modalFooter.append(submitButton);
@@ -320,7 +333,7 @@ function createProgram(program, num) {
     let modalBodyText = $("<p>", { text: "Description: "+program.description });
     //append the question to the modal
     let modalBodyQuestion = $("<p>", { text: "Requirement: (Yes/No) "+program.question });
-    modalBody.append(modalBodyText);
+    //modalBody.append(modalBodyText)
     modalBody.append(modalBodyQuestion);
 
     //create a sign up button at the bottom of the modal
@@ -359,23 +372,30 @@ function createProgram(program, num) {
     let signUpModalBodyButton = $("<button>", { type: "button", class: "btn btn-primary", text: "Sign Up", "data-dismiss": "modal", onclick: signParam});
     signUpModalFooter.append(signUpModalBodyButton);
 
-    //add the author duration location name num participants price and time to the modal
-    let author = program.author;
-    let duration = program.duration;
+    // Add the author, duration, location, name, numParticipants, price, and time to the modal
+    let description = program.description;
     let location = program.location;
     let name = program.name;
-    let numParticipants = program.numParticipants;
+    let startDate = program.startDate;
+    let endDate = program.endDate;
+    let startTime = program.startTime;
+    let endTime = program.endTime;
+    let day = program.day;
+    let capacity = program.capacity;
     let memberPrice = program.memberPrice;
     let nonMemberPrice = program.nonMemberPrice;
-    let time = program.time;
-    let authorText = $("<p>", { text: "Author: " + author });
-    let durationText = $("<p>", { text: "Duration: " + duration });
+    let numParticipants = program.numParticipants;
+
+    let descriptionText = $("<p>", { text: "Description: " + description });
     let locationText = $("<p>", { text: "Location: " + location });
     let nameText = $("<p>", { text: "Name: " + name });
-    let numParticipantsText = $("<p>", { text: "Number of Participants: " + program.numParticipants + " / " + "Maximum Number of Participants: " + program.maxParticipants });
+    let dateText = $("<p>", { text: "Date: " + startDate + " - " + endDate });
+    let timeText = $("<p>", { text: "Time: " + startTime + " - " + endTime + " (" + day + ")" });
+    let capacityText = $("<p>", { text: "Number of Participants: " + numParticipants + " / " + "Capacity: " + capacity });
     let priceText = $("<p>", { text: "Member Price: " + memberPrice + " | " + "Non-Member Price: " + nonMemberPrice });
-    let timeText = $("<p>", { text: "Time: " + time });
-    modalBody.append(authorText, durationText, locationText, nameText, numParticipantsText, priceText, timeText);
+
+    modalBody.append(descriptionText, locationText, nameText, dateText, timeText, capacityText, priceText);
+ 
 
     modalFooter.append(modalFooterButton);
     modalContent.append(modalHeader, modalBody, modalFooter);
@@ -447,6 +467,7 @@ function signUp(programId, num) {
         capacity: $("#programCapacity").val(),
         memberPrice: $("#programPrice").val().split(':')[0],
         nonMemberPrice: $("#programPrice").val().split(':')[1],
+        question: $("#programQuestion").val(),
     };
     fetch("/api/v1/admin/programs", {
         method: "POST",

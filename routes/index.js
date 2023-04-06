@@ -81,6 +81,7 @@ router.post("/admin/programs", (req, res, next) => {
       memberPrice: req.body.memberPrice,
       nonMemberPrice: req.body.nonMemberPrice,
       programID: uuidv4().split("-").reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000,
+      question: req.body.question,
       numParticipants: 0,
     };
 

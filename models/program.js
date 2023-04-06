@@ -58,6 +58,10 @@ const Program = sequelize.define('Program', {
   numParticipants: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  question: {
+    type: DataTypes.STRING(500),
+    allowNull: false,
   }
 }, {
   tableName: 'PROGRAM',
