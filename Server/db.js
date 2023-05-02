@@ -16,4 +16,5 @@ const sequelize = new Sequelize('ymca', 'gress2123', 'Wordpass12345!', {
     }
 });
 
+
 module.exports = sequelize;

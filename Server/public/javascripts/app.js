@@ -36,6 +36,9 @@ function login() {
         addLogoutButton();
         console.log("adding program option");
         addProgramOption();
+        if(user.isAdmin) {
+            addAdminButton();
+        }
         $('#defaultForm-email').val('');
         $('#defaultForm-pass').val('');
         //do more in here with javascript
@@ -136,7 +139,7 @@ function addProgramOption(){
         });
 
         let fifthFormInput = $("<input>", {
-        type: "text",
+        type: "date",
         id: "programStartDate",
         class: "form-control validate",
         });
@@ -148,7 +151,7 @@ function addProgramOption(){
         // Add endDate form
         let endDateForm = $("<div>", { class: "md-form mb-5" });
         let endDateFormInput = $("<input>", {
-        type: "text",
+        type: "date",
         id: "programEndDate",
         class: "form-control validate",
         });
@@ -160,7 +163,7 @@ function addProgramOption(){
         // Update sixthForm for startTime
         let sixthForm = $("<div>", { class: "md-form mb-5" });
         let sixthFormInput = $("<input>", {
-        type: "text",
+        type: "time",
         id: "programStartTime",
         class: "form-control validate",
         });
@@ -172,7 +175,7 @@ function addProgramOption(){
         // Add endTime form
         let endTimeForm = $("<div>", { class: "md-form mb-5" });
         let endTimeFormInput = $("<input>", {
-        type: "text",
+        type: "time",
         id: "programEndTime",
         class: "form-control validate",
         });
@@ -196,7 +199,7 @@ function addProgramOption(){
         // Update seventhForm for capacity
         let seventhForm = $("<div>", { class: "md-form mb-5" });
         let seventhFormInput = $("<input>", {
-        type: "text",
+        type: "number",
         id: "programCapacity",
         class: "form-control validate",
         });
@@ -262,7 +265,24 @@ function addProgramOption(){
         $("body").append(modal);
     }
 }
-
+function addAdminButton(){
+    let element = $('#admin');
+    element.css('display','list-item');
+}
+function displayAdmin(){
+    $('#fodder').hide("fast");
+    let parent = $('#adminPage');
+    let search = $('<input>',{type:'text',id:'filter',class:'form-control validate'});
+    let btn = $('<button>',{class:'btn',text:'search',onclick:'searchPrograms()'});
+    parent.append(search);
+    parent.append(btn);
+}
+function searchPrograms(){
+    let filter = $('#filter').val();
+    fetch('/api/v1/admin/programs?name='+filter)
+        .then(res => res.json())
+        .then(progs => populatePrograms(progs.program));
+}
 
 
 //Throwing an error
@@ -296,14 +316,18 @@ function populatePrograms(programList){
 //This function creates a program card
 //It takes in a program object and a number
 function createProgram(program, num) {
+    console.log("Inside createProgram");
+    console.log(program);
     //populate the card
     let thisProgram = $("<div>", { class: "col-12 col-md-6 col-lg-4 col-xl-3 programCard mb-4", id: "p" + num });
     let card = $("<div>", { class: "card h-100 shadow" });
     let cardImg = $("<img>", { class: "card-img-top", src: "https://logos-world.net/wp-content/uploads/2021/11/YMCA-Logo.png", alt: "YMCA logo" });
     let cardBody = $("<div>", { class: "card-body d-flex flex-column" });
+    console.log(program.name);
     let cardTitle = $("<h5>", { class: "card-title", text: program.name });
     let cardText = $("<p>", { class: "card-text small" });
     let locatText = $("<span>", { class: "font-weight-bold", text: "Location: " });
+    console.log(program.location);
     let locationValue = $("<span>", { text: program.location + " | " });
     let datesText = $("<span>", { class: "font-weight-bold", text: "Dates: " });
     let datesValue = $("<span>", { text: program.startDate + " - " + program.endDate + " | " });

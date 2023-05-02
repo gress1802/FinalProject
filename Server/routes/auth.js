@@ -38,6 +38,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     let user = await accountService.getAccountByEmail(req.body.email);
+    if (user && user.status == 'inactive') res.status(401).json("Account is inactive");
     const ERROR = "Invalid credentials";
     if (user) {
         req.session.regenerate(async (err) => {
@@ -64,6 +65,14 @@ router.post("/login", async (req, res) => {
     }
 });
 
+router.get("/who", (req, res) => {
+    if (req.session && req.session.user) {
+        res.status(200).json(req.session.user);
+    } else {
+        res.status(401).send("No user logged in");
+    }
+});
+
 
 
 /*
@@ -72,7 +81,7 @@ router.post("/login", async (req, res) => {
 */
 router.post("/logout", (req, res) => {
    req.session.regenerate( () => {
-      res.redirect("/");
+    res.status(200).json({ message : "User logged out" });
    });
 });
 

@@ -2,23 +2,28 @@ const Registration = require('../models/registration');
 const Program = require('../models/program');
 const User = require('../models/user');
 const { v4: uuidv4 } = require('uuid');
+const Account = require('../models/account');
 
-async function createRegistration(programID, userID) {
+async function createRegistration(programID, accountID) {
   try {
     // Retrieve the program with the given programID
     const program = await Program.findByPk(programID);
+    // Find existing registration
+    const existingRegistration = await Registration.findOne({ where: { programID, accountID } });
+    if (existingRegistration) {
+      return { success: false, message: 'Registration already exists' };
+    }
 
     // Check if the program exists
     if (!program) {
-      console.error('Error: Program not found');
-      return null;
+      return { success: false, message: 'Program not found' };
     }
 
     // Check if the number of participants is less than the capacity
     if (program.numParticipants < program.capacity) {
       const registration = await Registration.create({
         programID,
-        userID,
+        accountID,
         registrationID : uuidv4().split("-").reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000,
       });
 
@@ -26,22 +31,21 @@ async function createRegistration(programID, userID) {
       program.numParticipants += 1;
       await program.save();
 
-      return registration;
+      return { success: true, message: 'Registration created', registration };
     } else {
-      console.error('Error: Program capacity reached');
-      return null;
+      return { success: false, message: 'Program capacity reached' };
     }
   } catch (error) {
-    console.error('Error creating registration:', error);
-    return null;
+    return { success: false, message: 'Error creating registration' };
   }
 }
+
 
 
 async function getRegistrationByID(registrationID) {
   try {
     const registration = await Registration.findByPk(registrationID, {
-      include: [Program, User],
+      include: [Program, Account],
     });
 
     if (!registration) {
@@ -58,7 +62,7 @@ async function getRegistrationByID(registrationID) {
 async function getAllRegistrations() {
   try {
     const registrations = await Registration.findAll({
-      include: [Program, User],
+      include: [Program, Account],
     });
 
     return registrations;

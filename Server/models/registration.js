@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db');
 const Program = require('./Program');
 const User = require('./User');
+const Account = require('./Account');
 
 const Registration = sequelize.define('Registration', {
   registrationID: {
@@ -17,17 +18,26 @@ const Registration = sequelize.define('Registration', {
       key: 'programID',
     },
   },
-  userID: {
+  accountID: {
     type: DataTypes.INTEGER,
     allowNull: true,
     references: {
-      model: User,
-      key: 'userID',
+      model: Account,
+      key: 'accountID',
     },
   },
 }, {
   tableName: 'REGISTRATION',
   timestamps: false,
 });
+
+Registration.associate = (models) => {
+  Registration.belongsTo(models.Program, {
+    foreignKey: 'programID',
+  });
+  Registration.belongsTo(models.Account, {
+    foreignKey: 'accountID',
+  });
+}
 
 module.exports = Registration;

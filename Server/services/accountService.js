@@ -17,6 +17,18 @@ async function getAccountByEmail(email) {
   }
 }
 
+//get all accounts
+async function getAllAccounts() {
+  try {
+    const accounts = await Account.findAll();
+    return accounts;
+  } catch (error) {
+    console.error('Error getting all accounts:', error);
+    return null;
+  }
+}
+
 module.exports = {
-  getAccountByEmail
+  getAccountByEmail,
+  getAllAccounts,
 };

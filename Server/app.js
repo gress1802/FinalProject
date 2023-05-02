@@ -34,7 +34,7 @@ app.use(session({
 }));
 
 app.use('/api/v1', indexRouter);
-app.use('', authRouter);
+app.use('/api/v1', authRouter);
 
 
 // catch 404 and forward to error handler

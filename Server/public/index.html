@@ -2,10 +2,6 @@
 <html>
     <head>
         <title>La Crosse YMCA</title>
-        <!--Stylesheets-->
-        <link href = "./stylesheets/mainpage.css" rel = "stylesheet">
-        <!--Javascript-->
-        <script src = "./javascripts/app.js"></script>
         <!--Bootstrap&jQuery-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -13,6 +9,10 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+        <!--Stylesheets-->
+        <link href = "./stylesheets/mainpage.css" rel = "stylesheet">
+        <!--Javascript-->
+        <script src = "./javascripts/app.js"></script>
         <!--Google API Fonts-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,8 +21,10 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
     </head>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#"><span id = "brand">YMCA</span></a>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand" href="#">
+                <img src="http://haverhillcommunitytv.org/wp-content/uploads/2020/02/YMCA-Blue-Logo.jpg" alt="Y_logo" id="Ylogo">
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -36,6 +38,9 @@
                     </li>
                     <li class="nav-item">
                         <a href="" class="nav-link" data-toggle="modal" data-target="#modalLoginForm">Login</a>
+                    </li>
+                    <li id="admin" class="nav-item" style="display:none;">
+                        <a class="nav-link" href="#" id="adminBtn" onclick="displayAdmin()">Admin</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Programs</a>
@@ -126,8 +131,9 @@
         <!--End of sign in modal-->
 
         <!--Home Page (Intro)-->
-        <div class = 'container home'>
-            <div class = 'row'>
+        <img src="https://nmymca.org/wp-content/uploads/slider/cache/97e6a34e96bf490a78827aaec8ecce53/WEB_SliderHero_Annual-Campaign2023.jpg" alt="family" class="img-fluid">
+        <div class = 'container home' id="home">
+            <div class = 'row' id="fodder">
                 <div class = 'col'>
                     <h1>YMCA</h1>
                     <p>Since it was founded more than 160 years ago, the YMCA has been a part of the La Crosse community. It offers a comprehensive range of services and programs to assist people of all ages in maintaining a healthy body, mind, and spirit. The YMCA is a mission-driven organization that emphasizes social responsibility, healthy living, and youth development.</p>
@@ -136,12 +142,14 @@
                     <p>Ultimately, the YMCA plays a significant role in the La Crosse community by fostering strong families, active lifestyles, and a sense of belonging. Its dedication to social responsibility, healthy living, and youth development is beneficial.</p>
                 </div>
             </div>
+            <div id="adminPage"></div>
+                    <!--Program container-->
+            <div id="programContainer" class="container">
+
+            </div>
         </div>
 
-        <!--Program container-->
-        <div id="programContainer" class="container">
 
-        </div>
     </body>
     <footer>
 

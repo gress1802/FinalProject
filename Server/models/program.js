@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Registration = require('./registration');
 
 const Program = sequelize.define('Program', {
   programID: {
@@ -67,5 +68,11 @@ const Program = sequelize.define('Program', {
   tableName: 'PROGRAM',
   timestamps: false,
 });
+
+Program.associate = (models) => {
+  Program.hasMany(models.Registration, {
+    foreignKey: 'programID',
+  });
+}
 
 module.exports = Program;
