@@ -9,11 +9,18 @@ const registrationService = require('../services/registrationService.js');
 const Program = require('../models/program.js');
 const Registration = require('../models/registration.js');
 const AccountService = require('../services/accountService.js');
+const Family = require('../models/family.js');
+const FamilyMember = require('../models/family_member.js');
 const { Op } = require('sequelize');
 
 Account.associate({ Registration });
 Registration.associate({ Account, Program });
 Program.associate({ Registration });
+
+Family.associate({ FamilyMember });
+FamilyMember.associate({ Family, Account });
+
+
 /*
 THIS CODE IS ONLY RAN ONCE TO CREATE THE ACCOUNTS IN THE DATABASE
 *CREATE ADMIN ACCOUNT* 
@@ -89,7 +96,7 @@ router.post("/admin/programs", (req, res, next) => {
       programID: uuidv4().split("-").reduce((acc, val) => acc + parseInt(val, 16), 0) % 1000000000,
       question: req.body.question,
       numParticipants: 0,
-      status : true,
+      status : 'true',
     };
 
     console.log(req.body);
@@ -128,11 +135,6 @@ router.get("/admin/programs", async (req,res,next) => {//takes in a query param 
   res.status(200).send(await programService.getProgramByName(q.name));
 });
 
-/*
- * Post /api/v1/programs/:pid
- * This is a post endpoint that will sign a user up for a program
- * The user will either be a member or a guest
-*/
 router.post('/programs/:pid', async (req, res, next) => {
   let pid = req.params.pid;
   let program = await Program.findByPk(pid);
@@ -143,6 +145,32 @@ router.post('/programs/:pid', async (req, res, next) => {
   }
 
   if (req.session.user) {
+    // Get all programs the user is registered for
+    const userRegistrations = await Registration.findAll({
+      where: {
+        accountID: req.session.user.accountID
+      },
+      include: {
+        model: Program,
+        required: true
+      }
+    });
+
+    // Check for time conflicts
+      const hasConflict = userRegistrations.some(registration => {
+      const existingProgram = registration.Program;
+      const startTimeConflict = program.startTime <= existingProgram.endTime && program.startTime >= existingProgram.startTime;
+      const endTimeConflict = program.endTime >= existingProgram.startTime && program.endTime <= existingProgram.endTime;
+      // Check if the program is on the same day (must be separated by a comma)
+      const arrDays = existingProgram.day.split(",");
+      return arrDays.length === 1 ? (program.day == arrDays[0]) && (startTimeConflict || endTimeConflict) : (program.day == arrDays[0] || program.day == arrDays[1]) && (startTimeConflict || endTimeConflict);
+    });
+
+    if (hasConflict) {
+      res.status(400).send({ msg: 'Time conflict with another program' });
+      return;
+    }
+
     let registration = await registrationService.createRegistration(pid, req.session.user.accountID);
     if (registration.success == true) {
       res.status(200).send(program);
@@ -156,6 +184,7 @@ router.post('/programs/:pid', async (req, res, next) => {
     res.status(401).send({ msg: 'Guest registration not implemented' });
   }
 });
+
 
 router.get('/programs/search/:pid', async (req, res, next) => {
   try {
@@ -418,6 +447,39 @@ router.delete('/auth/programs/:programID', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// This endpoint gets all families and their members
+// GET /api/v1/families
+// This endpoint retrieves all families and their members
+router.get('/admin/families', async (req, res) => {
+  try {
+    // Retrieve all families and their family members
+    const families = await Family.findAll({
+      include: [{
+        model: FamilyMember,
+        required: true,
+        include: [{
+          model: Account,
+          attributes: ['accountID', 'email', 'username', 'status', 'isAdmin']
+        }]
+      }]
+    });
+
+    // Format the response data
+    const responseData = families.map(family => {
+      return {
+        familyID: family.familyID,
+        members: family.FamilyMembers.map(familyMember => familyMember.Account)
+      };
+    });
+
+    res.json(responseData);
+  } catch (error) {
+    console.error(error); // Log the error to see the details
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 
 

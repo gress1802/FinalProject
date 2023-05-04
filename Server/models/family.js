@@ -1,7 +1,7 @@
 //Sequelize model for the Family table in the database
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../db');
 const Account = require('./account');
+const sequelize = require('../db');
 
 const Family = sequelize.define('Family', {
   familyID: {
@@ -22,5 +22,12 @@ const Family = sequelize.define('Family', {
   tableName: 'Family',
   timestamps: false,
 });
+
+Family.associate = function(models) {
+  Family.hasMany(models.FamilyMember, {
+    foreignKey: 'familyID',
+  });
+};
+
 
 module.exports = Family;

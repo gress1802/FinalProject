@@ -13,32 +13,13 @@ const bcrypt = require('bcrypt');
  * @return {object} user - user object
  * @return {string} error - error message
 */
-/*
-router.post("/login", async (req, res) => {
-   let user = await accountService.getAccountByEmail(req.body.email);
-   const ERROR = "Invalid credentials";
-   if( user ) {
-      req.session.regenerate( (err) => {
-        if(err){
-            console.error(err);
-            res.status(500).send('Internal Server Error')
-        } else {
-            if(user.password == req.body.password){
-                req.session.user = user;
-                res.status(200).json(user);
-            } else{
-                res.status(401).json(ERROR);
-            }
-        }
-      });
-   } else {
-      res.status(401).json(ERROR);
-   }
-}); */
 
 router.post("/login", async (req, res) => {
     let user = await accountService.getAccountByEmail(req.body.email);
-    if (user && user.status == 'inactive') res.status(401).json("Account is inactive");
+    if (user && user.status == 'inactive') {
+        res.status(401).json("Account is inactive");
+        return;
+    }
     const ERROR = "Invalid credentials";
     if (user) {
         req.session.regenerate(async (err) => {
